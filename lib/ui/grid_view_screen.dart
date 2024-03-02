@@ -12,36 +12,55 @@ class GridViewScreen extends GetView<GridController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enter Alphabets'),
+        backgroundColor: Colors.redAccent,
+        title: const Text('Search word'),
       ),
       body: GetBuilder<GridController>(builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: controller.noColumns,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-            ),
-            itemCount: controller.noRows * controller.noColumns,
-            itemBuilder: (context, index) {
-              return Container(
-                color: Colors.blue,
-                child: Center(
-                  child: Text(
-                    controller.alphabetList[index],
-                    style: const TextStyle(fontSize: 20.0),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: controller.searchController,
+                autocorrect: false,
+                onChanged: (value) {
+                  controller.searchGrid();
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: controller.noColumns,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
                   ),
+                  itemCount: controller.noRows * controller.noColumns,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      color: controller.isHighlightedGrid(index)
+                          ? Colors.green
+                          : Colors.yellow,
+                      child: Center(
+                        child: Text(
+                          controller.alphabetList[index],
+                          style: const TextStyle(fontSize: 20.0),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.check),
-      ),
     );
   }
 }

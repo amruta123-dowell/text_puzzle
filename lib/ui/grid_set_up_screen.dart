@@ -64,8 +64,6 @@ class GridSetupScreen extends GetView<GridController> {
                     "Note: You have to enter ${controller.matrixSize - controller.alphabetList.length} number of characters",
                     style: const TextStyle(color: Colors.green),
                   ),
-
-                // if (controller.alphabetList.length == controller.matrixSize)
                 ElevatedButton(
                   onPressed: () {
                     controller.submitGridDetails();
