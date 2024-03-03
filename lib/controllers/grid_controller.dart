@@ -28,7 +28,9 @@ class GridController extends GetxController {
 
   void validateRowText(String? value) {
     if (value == null || value.isEmpty) {
-      errRow = "This Field is required";
+      errRow = "This Field is required.";
+    } else if (value == "0") {
+      errRow = "the row size should not be zero.";
     } else {
       if (noRows != int.parse(value)) {
         noRows = int.parse(value);
@@ -43,7 +45,9 @@ class GridController extends GetxController {
 
   void validateColumnText(String? value) {
     if (value == null || value.isEmpty) {
-      errColumn = "This field is required";
+      errColumn = "This field is required.";
+    } else if (value == "0") {
+      errColumn = "The column should not be zero.";
     } else {
       if (noColumns != int.parse(value)) {
         noColumns = int.parse(value);
@@ -68,16 +72,14 @@ class GridController extends GetxController {
     update();
   }
 
-  void addCharList(value) {
-    print("text-------------------------------> $value");
-
+  void addCharList(String value) {
     if (rowController.text.isNotEmpty && columnController.text.isNotEmpty) {
       noRows = int.parse(rowController.text);
       noColumns = int.parse(columnController.text);
       matrixSize = noRows * noColumns;
       update();
       if (alphabetList.length < matrixSize) {
-        alphabetList.add(value);
+        alphabetList.add(value.toLowerCase());
         if (alphabetList.length == matrixSize) {
           errChar = null;
         }
@@ -103,7 +105,7 @@ class GridController extends GetxController {
 
   String searchText = '';
   void searchGrid() {
-    searchText = searchController.text;
+    searchText = searchController.text.toLowerCase();
     highlightedCells.clear();
     update();
     if (searchText.isEmpty) return;
@@ -127,7 +129,7 @@ class GridController extends GetxController {
     int currentCol = col;
     for (int i = 0; i < searchController.text.length; i++) {
       if (currentCol >= noColumns ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[row * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -140,7 +142,7 @@ class GridController extends GetxController {
     int currentRow = row;
     for (int i = 0; i < searchController.text.length; i++) {
       if (currentRow >= noRows ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + col]) {
         return; // No match, exit loop
       }
@@ -154,7 +156,7 @@ class GridController extends GetxController {
     for (int i = 0; i < searchController.text.length; i++) {
       if (currentRow >= noRows ||
           currentCol >= noColumns ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -170,7 +172,7 @@ class GridController extends GetxController {
       if (currentRow >= noRows ||
           currentCol < 0 ||
           currentRow < 0 ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -187,7 +189,7 @@ class GridController extends GetxController {
       int currentCol = col - i;
       if (currentCol >= noColumns ||
           currentCol < 0 ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[row * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -202,7 +204,7 @@ class GridController extends GetxController {
       int currentRow = row - i;
       if (currentRow >= noRows ||
           currentRow < 0 ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + col]) {
         return; // No match, exit loop
       }
@@ -219,7 +221,7 @@ class GridController extends GetxController {
       // Check for valid indices and character match
       if (currentRow >= noRows ||
           currentCol < 0 ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -234,7 +236,7 @@ class GridController extends GetxController {
       // Adjusted checks to avoid negative indices and exceeding grid dimensions
       if (currentRow >= noRows ||
           currentCol < 0 ||
-          searchController.text[i] !=
+          searchController.text[i].toLowerCase() !=
               alphabetList[currentRow * noColumns + currentCol]) {
         return; // No match, exit loop
       }
@@ -243,15 +245,54 @@ class GridController extends GetxController {
   }
 
   bool isHighlightedGrid(int index) {
-    List<int> _uniqueCells = [];
+    if (highlightedCells.isEmpty) {
+      return false; // No search in progress
+    }
+    List<int> _uniqueList = [];
+    List<String> searchTextList = searchText.split('');
     for (int i = 0; i < highlightedCells.length; i++) {
-      if (!(_uniqueCells.contains(highlightedCells[i]))) {
-        _uniqueCells.add(highlightedCells[i]);
+      if (!(_uniqueList.contains(highlightedCells[i]))) {
+        _uniqueList.add(highlightedCells[i]);
       }
     }
-    if (_uniqueCells.length != searchController.text.length) {
-      return false;
+
+    // Check if any character in searchText is not present in highlightedCells
+    for (String character in searchTextList) {
+      if (!highlightedCells
+          .any((cellIndex) => alphabetList[cellIndex] == character)) {
+        // Character not found, entire word cannot match
+        highlightedCells.clear(); // Clear highlighted cells
+        displaySnackbar();
+        return false;
+      }
     }
-    return _uniqueCells.contains(index);
+
+    return highlightedCells.contains(index);
+  }
+
+  void resetMatrix() {
+    alphabetList.clear();
+    noColumns = 0;
+    noRows = 0;
+    searchController.clear();
+    rowController.clear();
+    columnController.clear();
+    errChar = null;
+    errColumn = null;
+    errRow = null;
+    update();
+    Get.back();
+  }
+
+  displaySnackbar() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
+        content: Text(
+          "Not found. Please search with other text.",
+          style: TextStyle(color: Colors.white, fontSize: 15),
+        ),
+        backgroundColor: Colors.red,
+      ));
+    });
   }
 }

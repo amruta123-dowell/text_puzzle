@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:puzzle_test/controllers/grid_controller.dart';
 import 'package:puzzle_test/custom_widgets/text_field_widget.dart';
@@ -10,7 +11,8 @@ class GridSetupScreen extends GetView<GridController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enter Grid Size'),
+        backgroundColor: Colors.green,
+        title: const Text('Set up grid matrix'),
       ),
       body: Center(
         child: Padding(
@@ -52,6 +54,10 @@ class GridSetupScreen extends GetView<GridController> {
                         onFieldSubmitted: (value) {
                           controller.addCharList(value);
                         },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[a-zA-Z ]")),
+                        ],
                       )
                     : const SizedBox.shrink(),
                 const SizedBox(
@@ -61,13 +67,21 @@ class GridSetupScreen extends GetView<GridController> {
                     controller.errColumn == null &&
                     controller.errRow == null)
                   Text(
-                    "Note: You have to enter ${controller.matrixSize - controller.alphabetList.length} number of characters",
-                    style: const TextStyle(color: Colors.green),
+                    "Note: You have to enter ${controller.matrixSize - controller.alphabetList.length} characters",
+                    style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
                   ),
+                const SizedBox(
+                  height: 20,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     controller.submitGridDetails();
                   },
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   child: Text(
                     controller.alphabetList.length != controller.matrixSize
                         ? "submit"

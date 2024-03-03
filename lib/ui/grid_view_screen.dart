@@ -12,27 +12,36 @@ class GridViewScreen extends GetView<GridController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        title: const Text('Search word'),
+        backgroundColor: Colors.green,
+        title: const Text('Word Game'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                controller.resetMatrix();
+              },
+              icon: const Icon(Icons.restart_alt))
+        ],
       ),
-      body: GetBuilder<GridController>(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: controller.searchController,
-                autocorrect: false,
-                onChanged: (value) {
-                  controller.searchGrid();
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              decoration: const InputDecoration(
+                  labelText: "Search word ", filled: true),
+              controller: controller.searchController,
+              autocorrect: false,
+              onChanged: (value) {
+                controller.searchGrid();
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            if (controller.noColumns > 0 && controller.noRows > 0)
               Expanded(
                 child: GridView.builder(
                   shrinkWrap: true,
@@ -43,24 +52,25 @@ class GridViewScreen extends GetView<GridController> {
                   ),
                   itemCount: controller.noRows * controller.noColumns,
                   itemBuilder: (context, index) {
-                    return Container(
-                      color: controller.isHighlightedGrid(index)
-                          ? Colors.green
-                          : Colors.yellow,
-                      child: Center(
-                        child: Text(
-                          controller.alphabetList[index],
-                          style: const TextStyle(fontSize: 20.0),
+                    return GetBuilder<GridController>(builder: (controller) {
+                      return Container(
+                        color: controller.isHighlightedGrid(index)
+                            ? Colors.green
+                            : Colors.yellow,
+                        child: Center(
+                          child: Text(
+                            controller.alphabetList[index],
+                            style: const TextStyle(fontSize: 20.0),
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    });
                   },
                 ),
               ),
-            ],
-          ),
-        );
-      }),
+          ],
+        ),
+      ),
     );
   }
 }

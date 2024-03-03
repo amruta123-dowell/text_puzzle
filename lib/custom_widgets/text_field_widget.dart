@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String? errorText;
@@ -8,6 +9,7 @@ class TextFieldWidget extends StatelessWidget {
   final void Function(String)? onFieldSubmitted;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextFieldWidget(
       {super.key,
@@ -17,7 +19,8 @@ class TextFieldWidget extends StatelessWidget {
       required this.tecController,
       this.onFieldSubmitted,
       this.keyboardType,
-      this.maxLength});
+      this.maxLength,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -55,24 +58,22 @@ class TextFieldWidget extends StatelessWidget {
           onTapOutside: (e10vent) =>
               FocusManager.instance.primaryFocus?.unfocus(),
           onChanged: onChanged,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(
+            color: Colors.black,
+          ),
           cursorColor:
               Theme.of(context).scaffoldBackgroundColor.withOpacity(0.16),
           controller: tecController,
           onFieldSubmitted: onFieldSubmitted,
           keyboardType: keyboardType ?? TextInputType.text,
           decoration: const InputDecoration(
-            contentPadding: EdgeInsets.only(
-              bottom: 7,
-            ),
-            // enabledBorder: InputBorder.none,
-            // focusedBorder: InputBorder.none,
             filled: true,
             isDense: true,
             focusColor: Colors.transparent,
-            fillColor: Colors.grey,
+            fillColor: Color.fromARGB(255, 239, 238, 238),
             errorBorder: InputBorder.none,
           ),
+          inputFormatters: inputFormatters,
         ),
       ],
     );
