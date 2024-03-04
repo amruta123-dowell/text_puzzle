@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,14 +16,16 @@ class GridController extends GetxController {
   String? errColumn;
   String? errChar;
   int matrixSize = -1;
-  bool isMatrixExceed = false;
+
   List<int> highlightedCells = [];
+  String searchText = '';
 
   @override
   void onInit() {
     super.onInit();
   }
 
+//validate Row
   void validateRowText(String? value) {
     if (value == null || value.isEmpty) {
       errRow = "This Field is required.";
@@ -39,10 +39,13 @@ class GridController extends GetxController {
       }
       errRow = null;
     }
-
+    if (errRow != null) {
+      alphabetList.clear();
+    }
     update();
   }
 
+//validate column
   void validateColumnText(String? value) {
     if (value == null || value.isEmpty) {
       errColumn = "This field is required.";
@@ -56,10 +59,13 @@ class GridController extends GetxController {
       }
       errColumn = null;
     }
-
+    if (errColumn != null) {
+      alphabetList.clear();
+    }
     update();
   }
 
+//validate (row * column) number of elements are present or not.
   void validateAlphabetList() {
     if (alphabetList.length != matrixSize &&
         rowController.text.isNotEmpty &&
@@ -72,6 +78,7 @@ class GridController extends GetxController {
     update();
   }
 
+//add character in grid matrix list
   void addCharList(String value) {
     if (rowController.text.isNotEmpty && columnController.text.isNotEmpty) {
       noRows = int.parse(rowController.text);
@@ -89,6 +96,7 @@ class GridController extends GetxController {
     update();
   }
 
+  ///submit the grid matrix data and navigate to the Grid view screen
   void submitGridDetails() {
     validateColumnText(columnController.text);
     validateRowText(rowController.text);
@@ -103,7 +111,6 @@ class GridController extends GetxController {
     update();
   }
 
-  String searchText = '';
   void searchGrid() {
     searchText = searchController.text.toLowerCase();
     highlightedCells.clear();
@@ -182,7 +189,7 @@ class GridController extends GetxController {
     }
   }
 
-  // Reverse searches (implemented here)
+//Reverse searches
   void searchHorizontallyReverse(int row, int col) {
     int searchTextLength = searchController.text.length;
     for (int i = 0; i < searchTextLength; i++) {
@@ -233,7 +240,7 @@ class GridController extends GetxController {
     int searchTextLength = searchController.text.length;
     for (int i = 0; i < searchTextLength; i++) {
       int currentRow = row + i, currentCol = col - i;
-      // Adjusted checks to avoid negative indices and exceeding grid dimensions
+
       if (currentRow >= noRows ||
           currentCol < 0 ||
           searchController.text[i].toLowerCase() !=

@@ -55,8 +55,7 @@ class GridSetupScreen extends GetView<GridController> {
                           controller.addCharList(value);
                         },
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp("[a-zA-Z ]")),
+                          FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
                         ],
                       )
                     : const SizedBox.shrink(),

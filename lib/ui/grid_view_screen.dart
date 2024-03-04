@@ -41,33 +41,35 @@ class GridViewScreen extends GetView<GridController> {
             const SizedBox(
               height: 20,
             ),
-            if (controller.noColumns > 0 && controller.noRows > 0)
-              Expanded(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: controller.noColumns,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 8.0,
-                  ),
-                  itemCount: controller.noRows * controller.noColumns,
-                  itemBuilder: (context, index) {
-                    return GetBuilder<GridController>(builder: (controller) {
-                      return Container(
-                        color: controller.isHighlightedGrid(index)
-                            ? Colors.green
-                            : Colors.yellow,
-                        child: Center(
-                          child: Text(
-                            controller.alphabetList[index],
-                            style: const TextStyle(fontSize: 20.0),
+            GetBuilder<GridController>(builder: (controller) {
+              return (controller.noColumns > 0 &&
+                      controller.noRows > 0 &&
+                      controller.alphabetList.isNotEmpty)
+                  ? Expanded(
+                      child: GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: controller.noColumns,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                      ),
+                      itemCount: controller.noRows * controller.noColumns,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          color: controller.isHighlightedGrid(index)
+                              ? Colors.green
+                              : Colors.yellow,
+                          child: Center(
+                            child: Text(
+                              controller.alphabetList[index],
+                              style: const TextStyle(fontSize: 20.0),
+                            ),
                           ),
-                        ),
-                      );
-                    });
-                  },
-                ),
-              ),
+                        );
+                      },
+                    ))
+                  : const SizedBox.shrink();
+            })
           ],
         ),
       ),

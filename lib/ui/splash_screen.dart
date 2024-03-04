@@ -19,7 +19,7 @@ class SplashScreen extends GetView<SplashController> {
             alignment: Alignment.center,
             child: const Text(
               "PLAY WORD GAME...",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ));
