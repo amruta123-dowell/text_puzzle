@@ -5,8 +5,8 @@ import 'package:puzzle_test/controllers/grid_controller.dart';
 
 class GridViewScreen extends GetView<GridController> {
   const GridViewScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +16,11 @@ class GridViewScreen extends GetView<GridController> {
         title: const Text('Word Game'),
         actions: [
           IconButton(
-              onPressed: () {
-                controller.resetMatrix();
-              },
-              icon: const Icon(Icons.restart_alt))
+            onPressed: () {
+              controller.resetMatrix();
+            },
+            icon: const Icon(Icons.restart_alt),
+          )
         ],
       ),
       body: Padding(

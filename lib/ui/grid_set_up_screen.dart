@@ -43,17 +43,18 @@ class GridSetupScreen extends GetView<GridController> {
                 const SizedBox(
                   height: 10,
                 ),
-                controller.alphabetList.length != controller.matrixSize
+                (controller.noRows > 0 &&
+                        controller.noColumns > 0 &&
+                        controller.errColumn == null &&
+                        controller.errRow == null)
                     ? TextFieldWidget(
-                        maxLength: 1,
+                        maxLength: (controller.noColumns * controller.noRows),
                         onChanged: (value) {
                           controller.validateAlphabetList();
                         },
                         title: "Type a character",
+                        errorText: controller.errChar,
                         tecController: controller.charController,
-                        onFieldSubmitted: (value) {
-                          controller.addCharList(value);
-                        },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
                         ],
@@ -82,7 +83,8 @@ class GridSetupScreen extends GetView<GridController> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   child: Text(
-                    controller.alphabetList.length != controller.matrixSize
+                    (controller.matrixSize <= 0 ||
+                            controller.alphabetList.isEmpty)
                         ? "submit"
                         : 'Let\'s Start',
                     style: const TextStyle(

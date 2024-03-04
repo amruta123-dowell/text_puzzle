@@ -6,7 +6,7 @@ class TextFieldWidget extends StatelessWidget {
   final String title;
   final void Function(String) onChanged;
   final TextEditingController tecController;
-  final void Function(String)? onFieldSubmitted;
+
   final TextInputType? keyboardType;
   final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
@@ -17,7 +17,6 @@ class TextFieldWidget extends StatelessWidget {
       required this.title,
       required this.onChanged,
       required this.tecController,
-      this.onFieldSubmitted,
       this.keyboardType,
       this.maxLength,
       this.inputFormatters});
@@ -64,7 +63,6 @@ class TextFieldWidget extends StatelessWidget {
           cursorColor:
               Theme.of(context).scaffoldBackgroundColor.withOpacity(0.16),
           controller: tecController,
-          onFieldSubmitted: onFieldSubmitted,
           keyboardType: keyboardType ?? TextInputType.text,
           decoration: const InputDecoration(
             filled: true,

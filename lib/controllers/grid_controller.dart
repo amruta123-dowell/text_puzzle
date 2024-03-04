@@ -32,15 +32,13 @@ class GridController extends GetxController {
     } else if (value == "0") {
       errRow = "the row size should not be zero.";
     } else {
-      if (noRows != int.parse(value)) {
-        noRows = int.parse(value);
-        alphabetList.clear();
-        validateAlphabetList();
-      }
       errRow = null;
+      noRows = int.parse(value);
     }
     if (errRow != null) {
+      charController.clear();
       alphabetList.clear();
+      validateAlphabetList();
     }
     update();
   }
@@ -52,47 +50,33 @@ class GridController extends GetxController {
     } else if (value == "0") {
       errColumn = "The column should not be zero.";
     } else {
-      if (noColumns != int.parse(value)) {
-        noColumns = int.parse(value);
-        alphabetList.clear();
-        validateAlphabetList();
-      }
+      noColumns = int.parse(value);
       errColumn = null;
     }
     if (errColumn != null) {
+      charController.clear();
       alphabetList.clear();
+      validateAlphabetList();
     }
     update();
   }
 
 //validate (row * column) number of elements are present or not.
   void validateAlphabetList() {
-    if (alphabetList.length != matrixSize &&
+    alphabetList.clear();
+
+    searchText = charController.text.removeAllWhitespace;
+    matrixSize = noColumns * noRows;
+    if (searchText.length != matrixSize &&
         rowController.text.isNotEmpty &&
         columnController.text.isNotEmpty) {
       matrixSize = noColumns * noRows;
       errChar = "Alphabets are missing.";
     } else {
+      List<String> characterList = searchText.split('');
+      alphabetList.addAll(characterList);
       errChar = null;
     }
-    update();
-  }
-
-//add character in grid matrix list
-  void addCharList(String value) {
-    if (rowController.text.isNotEmpty && columnController.text.isNotEmpty) {
-      noRows = int.parse(rowController.text);
-      noColumns = int.parse(columnController.text);
-      matrixSize = noRows * noColumns;
-      update();
-      if (alphabetList.length < matrixSize) {
-        alphabetList.add(value.toLowerCase());
-        if (alphabetList.length == matrixSize) {
-          errChar = null;
-        }
-      }
-    }
-    charController.clear();
     update();
   }
 
@@ -279,11 +263,14 @@ class GridController extends GetxController {
 
   void resetMatrix() {
     alphabetList.clear();
+    matrixSize = -1;
     noColumns = 0;
     noRows = 0;
     searchController.clear();
     rowController.clear();
     columnController.clear();
+    charController.clear();
+    searchText = '';
     errChar = null;
     errColumn = null;
     errRow = null;
